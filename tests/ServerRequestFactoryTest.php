@@ -445,7 +445,7 @@ class ServerRequestFactoryTest extends TestCase
     public function testParseUploadedFiles(array $files): void
     {
         foreach ($files as $file) {
-            \unlink($file['tmp_name']);
+            @\unlink($file['tmp_name']);
             \file_put_contents($file['tmp_name'], $file['content']);
         }
 
