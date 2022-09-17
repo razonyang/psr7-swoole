@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use RazonYang\Psr7\Swoole\ServerRequestFactory;
 use RazonYang\Psr7\Swoole\ServerRequestFactoryInterface;
+use RazonYang\UnitHelper\ReflectionHelper;
 use Swoole\Http\Request;
 
 class ServerRequestFactoryTest extends TestCase
@@ -200,7 +201,7 @@ class ServerRequestFactoryTest extends TestCase
     {
         $factory = $this->createServerRequestFactory();
         /** @var UriInterface $uri */
-        $uri = $this->callMethod($factory, 'createUri', [$server]);
+        $uri = ReflectionHelper::invokeMethod($factory, 'createUri', $server);
 
         $this->assertSame($host, $uri->getHost());
     }
@@ -240,7 +241,7 @@ class ServerRequestFactoryTest extends TestCase
     {
         $factory = $this->createServerRequestFactory();
         /** @var UriInterface $uri */
-        $uri = $this->callMethod($factory, 'createUri', [$server]);
+        $uri = ReflectionHelper::invokeMethod($factory, 'createUri', $server);
 
         $this->assertSame($scheme, $uri->getScheme());
     }
@@ -287,7 +288,7 @@ class ServerRequestFactoryTest extends TestCase
     {
         $factory = $this->createServerRequestFactory();
         /** @var UriInterface $uri */
-        $uri = $this->callMethod($factory, 'createUri', [$server]);
+        $uri = ReflectionHelper::invokeMethod($factory, 'createUri', $server);
 
         $this->assertSame($port, $uri->getPort());
     }
@@ -327,7 +328,7 @@ class ServerRequestFactoryTest extends TestCase
     {
         $factory = $this->createServerRequestFactory();
         /** @var UriInterface $uri */
-        $uri = $this->callMethod($factory, 'createUri', [$server]);
+        $uri = ReflectionHelper::invokeMethod($factory, 'createUri', $server);
 
         $this->assertSame($query, $uri->getQuery());
     }
@@ -369,7 +370,7 @@ class ServerRequestFactoryTest extends TestCase
     {
         $factory = $this->createServerRequestFactory();
         /** @var UriInterface $uri */
-        $uri = $this->callMethod($factory, 'createUri', [$server]);
+        $uri = ReflectionHelper::invokeMethod($factory, 'createUri', $server);
 
         $this->assertSame($path, $uri->getPath());
     }
@@ -390,9 +391,7 @@ class ServerRequestFactoryTest extends TestCase
     public function testParseProtocolVersion(string $protocol, string $version): void
     {
         $factory = $this->createServerRequestFactory();
-        $actual = $this->callMethod($factory, 'parseProtocolVersion', [
-            ['SERVER_PROTOCOL' => $protocol],
-        ]);
+        $actual = ReflectionHelper::invokeMethod($factory, 'parseProtocolVersion', ['SERVER_PROTOCOL' => $protocol]);
 
         $this->assertSame($version, $actual);
     }
@@ -450,7 +449,7 @@ class ServerRequestFactoryTest extends TestCase
         }
 
         $factory = $this->createServerRequestFactory();
-        $actual = $this->callMethod($factory, 'parseUploadedFiles', [$files]);
+        $actual = ReflectionHelper::invokeMethod($factory, 'parseUploadedFiles', $files);
 
         $this->assertCount(count($files), $actual);
         foreach ($actual as $uploadedFile) {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace RazonYang\Psr7\Swoole\Tests;
 
 use RazonYang\Psr7\Swoole\EmitterFactory;
+use RazonYang\UnitHelper\ReflectionHelper;
 
 class EmitterFactoryTest extends TestCase
 {
@@ -26,6 +27,6 @@ class EmitterFactoryTest extends TestCase
     public function testNew(int $bufferSize): void
     {
         $factory = new EmitterFactory($bufferSize);
-        $this->assertSame($bufferSize, $this->getProperty($factory, 'bufferSize'));
+        $this->assertSame($bufferSize, ReflectionHelper::getPropertyValue($factory, 'bufferSize'));
     }
 }
