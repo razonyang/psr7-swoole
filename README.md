@@ -3,8 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/razonyang/psr7-swoole/v/stable.png)](https://packagist.org/packages/razonyang/psr7-swoole)
 [![Total Downloads](https://poser.pugx.org/razonyang/psr7-swoole/downloads.png)](https://packagist.org/packages/razonyang/psr7-swoole)
 [![Build Status](https://github.com/razonyang/psr7-swoole/workflows/build/badge.svg)](https://github.com/razonyang/psr7-swoole/actions)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/razonyang/psr7-swoole/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/razonyang/psr7-swoole/?branch=main)
-[![Code Coverage](https://scrutinizer-ci.com/g/razonyang/psr7-swoole/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/razonyang/psr7-swoole/?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/razonyang/psr7-swoole/badge.svg?branch=main)](https://coveralls.io/github/razonyang/psr7-swoole?branch=main)
 
 The PSR7 helpers for Swoole.
 

@@ -7,3 +7,5 @@ composer.lock
 
 # PHPUnit
 .phpunit.result.cache
+coverage.xml
+coveralls-upload.json
