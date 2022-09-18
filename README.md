@@ -39,6 +39,7 @@ run(function () {
     $psr7Factory =new Psr17Factory();
 
     $server = new Server('127.0.0.1', 9501, false);
+    
     $server->handle('/', function ($request, $response) use ($emitterFactory, $serverRequestFactory, $psr7Factory) {
         $emitter = $emitterFactory->create($response);
         $psrRequest = $serverRequestFactory->create($request);
