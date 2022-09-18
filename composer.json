@@ -30,7 +30,8 @@
     "require-dev": {
         "swoole/ide-helper": "^5.0",
         "phpunit/phpunit": "^9.5",
-        "razonyang/unit-helper": "^1.0"
+        "razonyang/unit-helper": "^1.0",
+        "razonyang/swoole-unit": "^1.0"
     },
     "scripts": {
         "lint": "php-cs-fixer fix --config .php-cs-fixer.php src tests",

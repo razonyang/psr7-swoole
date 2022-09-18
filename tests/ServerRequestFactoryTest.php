@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace RazonYang\Psr7\Swoole\Tests;
 
-use Nyholm\Psr7\ServerRequest;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use RazonYang\Psr7\Swoole\ServerRequestFactory;
 use RazonYang\Psr7\Swoole\ServerRequestFactoryInterface;
+use RazonYang\Swoole\Unit\RequestBuilder;
 use RazonYang\UnitHelper\ReflectionHelper;
-use Swoole\Http\Request;
 
 class ServerRequestFactoryTest extends TestCase
 {
@@ -23,13 +21,13 @@ class ServerRequestFactoryTest extends TestCase
                 'GET',
                 '/',
                 [
-                    'Host' => 'localhost',
-                    'Connection' => 'keep-alive',
-                    'Pragma' => 'no-cache',
-                    'Cache-Control' => 'no-cache',
-                    'Accept' => 'text/html',
-                    'Accept-Encoding' => 'gzip, deflate, br',
-                    'Cookie' => 'phpsessid=fcccs2af8673a2f343a61a96551c8523d79ea; username=razonyang',
+                    'Host' => ['localhost'],
+                    'Connection' => ['keep-alive'],
+                    'Pragma' => ['no-cache'],
+                    'Cache-Control' => ['no-cache'],
+                    'Accept' => ['text/html'],
+                    'Accept-Encoding' => ['gzip, deflate, br'],
+                    'Cookie' => ['phpsessid=fcccs2af8673a2f343a61a96551c8523d79ea; username=razonyang'],
                 ],
                 null,
             ],
@@ -37,7 +35,7 @@ class ServerRequestFactoryTest extends TestCase
                 'GET',
                 '/users?name=foo&age=18',
                 [
-                    'Host' => 'localhost',
+                    'Host' => ['localhost'],
                 ],
                 null,
             ],
@@ -45,9 +43,9 @@ class ServerRequestFactoryTest extends TestCase
                 'POST',
                 '/users',
                 [
-                    'Host' => 'localhost',
-                    'Content-Type' => 'application/json',
-                    'Content-Length' => 23,
+                    'Host' => ['localhost'],
+                    'Content-Type' => ['application/json'],
+                    'Content-Length' => ['23'],
                 ],
                 '{"name":"bar","age":18}',
             ],
@@ -55,20 +53,12 @@ class ServerRequestFactoryTest extends TestCase
                 'POST',
                 '/upload',
                 [
-                    'Host' => 'localhost',
-                    'Content-Type' => 'multipart/form-data; boundary='. $this->boundary,
-                    'Content-Length' => 1000,
+                    'Host' => ['localhost'],
                 ],
                 null,
                 [
-                    'foo.txt' => [
-                        'name' => 'foo.txt',
-                        'content' => 'foo.txt',
-                    ],
-                    'bar.txt' => [
-                        'name' => 'bar.txt',
-                        'content' => 'bar.txt',
-                    ],
+                    'foo.txt' => __FILE__,
+                    'bar.txt' => \dirname(__DIR__) .\DIRECTORY_SEPARATOR . 'README.md',
                 ],
             ],
         ];
@@ -84,46 +74,37 @@ class ServerRequestFactoryTest extends TestCase
         ?string $body,
         array $files = [],
     ): void {
-        $factory = $this->createServerRequestFactory();
-
-        $psrRequest = new ServerRequest($method, $uri, $headers, $body);
-
-        \parse_str($psrRequest->getUri()->getQuery(), $queryParams);
-        $psrRequest = $psrRequest->withQueryParams($queryParams);
-
+        $cookies = [];
         if (isset($headers['Cookie'])) {
-            $cookies = [];
-            foreach (explode('; ', $headers['Cookie']) as $str) {
+            foreach (explode('; ', $headers['Cookie'][0]) as $str) {
                 list($name, $value) = explode('=', $str);
                 $cookies[$name] = $value;
             }
-            $psrRequest = $psrRequest->withCookieParams($cookies);
         }
 
-        $message =$this->createMessage($psrRequest, $files);
-        // printf("\n%s\n",$message);
 
-        $request = Request::create();
-        $this->assertNotFalse($request->parse($message));
-        // var_dump($request->files);die;
+        $builder = (new RequestBuilder($method, $uri))
+            ->headers($headers);
 
+        if ($body) {
+            $builder->body($body);
+        } elseif ($files) {
+            $builder->multipart([], $files);
+        }
+
+        $request = $builder->create();
+
+        $factory = $this->createServerRequestFactory();
         $actual = $factory->create($request);
 
         $this->assertSame($method, $actual->getMethod());
 
-        $this->assertSame($psrRequest->getUri()->getPath(), $actual->getUri()->getPath());
-
-        $this->assertSame($psrRequest->getProtocolVersion(), $actual->getProtocolVersion());
-
-        $this->assertSame($psrRequest->getQueryParams(), $actual->getQueryParams());
-
-        $this->assertCount(count($psrRequest->getHeaders()), $actual->getHeaders());
-        foreach ($psrRequest->getHeaders() as $name => $values) {
+        foreach ($headers as $name => $values) {
             $this->assertTrue($actual->hasHeader($name));
             $this->assertSame($values, $actual->getHeader($name));
         }
 
-        $this->assertSame($psrRequest->getCookieParams(), $actual->getCookieParams());
+        $this->assertSame($cookies, $actual->getCookieParams());
 
         if ($body) {
             $this->assertSame($body, $actual->getBody()->__toString());
@@ -132,38 +113,10 @@ class ServerRequestFactoryTest extends TestCase
         if ($files) {
             $this->assertCount(count($files), $actual->getUploadedFiles());
             foreach ($actual->getUploadedFiles() as $file) {
-                $this->assertArrayHasKey($file->getClientFilename(), $files);
-                $this->assertSame($files[$file->getClientFilename()]['content'], $file->getStream()->__toString());
+                $this->assertSame(\filesize($file->getClientFilename()), $file->getSize());
+                $this->assertSame(\file_get_contents($file->getClientFilename()), $file->getStream()->__toString());
             }
         }
-    }
-
-    private function createMessage(ServerRequestInterface $request, array $files = []): string
-    {
-        $message = sprintf("%s %s HTTP/1.1\r\n", $request->getMethod(), $request->getUri()->__toString());
-
-        foreach ($request->getHeaders() as $name => $values) {
-            $message .= sprintf("%s: %s\r\n", $name, implode(", ", $values));
-        }
-
-        $message .= "\r\n";
-        $body = $request->getBody()->__toString();
-        if ($body) {
-            $message .= sprintf("%s", $body);
-        } elseif ($files) {
-            foreach ($files as $file) {
-                $message .= \sprintf(
-                    "--%s\r\ncontent-disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n\r\n%s\r\n",
-                    $this->boundary,
-                    $file['name'],
-                    $file['name'],
-                    $file['content'],
-                );
-            }
-            $message .= \sprintf('--%s--', $this->boundary);
-        }
-
-        return $message;
     }
 
     public function hostProvider(): array
