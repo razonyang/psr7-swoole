@@ -6,6 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/razonyang/psr7-swoole/badge.svg?branch=main)](https://coveralls.io/github/razonyang/psr7-swoole?branch=main)
 
 The PSR-7 helpers for Swoole, the bridge of Swoole and PSR things, such as PSR-7 HTTP message, PSR-15 handlers and PSR-15 middlewares.
+It allows to integrate Swoole with PSR-compatible frameworks to speed up your applications.
 
 - Convert `Swoole\Http\Request` to `Psr\Http\Message\ServerRequestInterface`.
 - Emit `Psr\Http\Message\ResponseInterface` to `Swoole\Http\Response`.
