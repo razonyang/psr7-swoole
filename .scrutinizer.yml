@@ -1,0 +1,40 @@
+checks:
+  php: true
+
+filter:
+  paths:
+    - src/
+
+build:
+  dependencies:
+    before:
+      - sudo apt update
+      - sudo apt upgrade -f -s
+
+  environment:
+    php:
+      version: 8.1
+      ini:
+        "xdebug.mode": coverage
+      pecl_extensions:
+        - swoole-5.0.0
+
+  nodes:
+    analysis:
+      tests:
+        override:
+          - php-scrutinizer-run
+
+    phpunit:
+      dependencies:
+        override:
+          - composer self-update
+          - composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+
+      tests:
+        override:
+          - command: ./vendor/bin/phpunit --coverage-clover ./coverage.xml
+            on_node: 1
+            coverage:
+              file: coverage.xml
+              format: php-clover
