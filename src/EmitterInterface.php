@@ -12,7 +12,7 @@ interface EmitterInterface
      * Emits a PSR-7 response.
      *
      * @param ResponseInterface $response
-     * @param bool $withoutBody
+     * @param bool              $withoutBody
      */
     public function emit(ResponseInterface $response, bool $withoutBody = false);
 }
