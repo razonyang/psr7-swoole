@@ -23,9 +23,9 @@ final class ServerRequestFactory implements ServerRequestFactoryInterface
 
         $cookies = $request->cookie ?? [];
         if ($cookies) {
-            $tmp= [];
+            $tmp = [];
             foreach ($cookies as $name => $value) {
-                $tmp[] = sprintf("%s=%s", $name, $value);
+                $tmp[] = sprintf('%s=%s', $name, $value);
             }
             $headers['cookie'] = implode('; ', $tmp);
         }
@@ -41,12 +41,10 @@ final class ServerRequestFactory implements ServerRequestFactoryInterface
 
         \parse_str($uri->getQuery(), $queryParams);
 
-        $psrRequest = $psrRequest
+        return $psrRequest
             ->withQueryParams($queryParams)
             ->withCookieParams($cookies)
             ->withUploadedFiles($this->parseUploadedFiles($request->files??[]));
-
-        return $psrRequest;
     }
 
     private function getScriptName(): string

@@ -58,7 +58,7 @@ class ServerRequestFactoryTest extends TestCase
                 null,
                 [
                     'foo.txt' => __FILE__,
-                    'bar.txt' => \dirname(__DIR__) .\DIRECTORY_SEPARATOR . 'README.md',
+                    'bar.txt' => \dirname(__DIR__) . \DIRECTORY_SEPARATOR . 'README.md',
                 ],
             ],
         ];
@@ -77,7 +77,7 @@ class ServerRequestFactoryTest extends TestCase
         $cookies = [];
         if (isset($headers['Cookie'])) {
             foreach (explode('; ', $headers['Cookie'][0]) as $str) {
-                list($name, $value) = explode('=', $str);
+                [$name, $value] = explode('=', $str);
                 $cookies[$name] = $value;
             }
         }
@@ -361,7 +361,7 @@ class ServerRequestFactoryTest extends TestCase
                     'foo.jpg' => [
                         'name' => 'foo.jpg',
                         'type' => 'image/jpeg',
-                        'tmp_name' => $tmpDir. \DIRECTORY_SEPARATOR. 'swoole.upfile.foo.jpg',
+                        'tmp_name' => $tmpDir . \DIRECTORY_SEPARATOR . 'swoole.upfile.foo.jpg',
                         'error' => 0,
                         'size' => 7,
                         'content' => 'foo.jpg',
@@ -373,7 +373,7 @@ class ServerRequestFactoryTest extends TestCase
                     'bar.png' => [
                         'name' => 'bar.png',
                         'type' => 'image/png',
-                        'tmp_name' => $tmpDir. \DIRECTORY_SEPARATOR. 'swoole.upfile.bar.png',
+                        'tmp_name' => $tmpDir . \DIRECTORY_SEPARATOR . 'swoole.upfile.bar.png',
                         'error' => 0,
                         'size' => 7,
                         'content' => 'bar.png',
@@ -381,7 +381,7 @@ class ServerRequestFactoryTest extends TestCase
                     'fizz.jpg' => [
                         'name' => 'fizz.jpg',
                         'type' => 'image/jpeg',
-                        'tmp_name' => $tmpDir. \DIRECTORY_SEPARATOR. 'swoole.upfile.fizz.jpg',
+                        'tmp_name' => $tmpDir . \DIRECTORY_SEPARATOR . 'swoole.upfile.fizz.jpg',
                         'error' => 0,
                         'size' => 8,
                         'content' => 'fizz.jpg',
@@ -419,8 +419,6 @@ class ServerRequestFactoryTest extends TestCase
 
     private function createServerRequestFactory(): ServerRequestFactoryInterface
     {
-        $factory = new ServerRequestFactory();
-
-        return $factory;
+        return new ServerRequestFactory();
     }
 }
