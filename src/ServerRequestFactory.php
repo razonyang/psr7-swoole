@@ -19,13 +19,13 @@ final class ServerRequestFactory implements ServerRequestFactoryInterface
         $server['SCRIPT_NAME'] = $this->getScriptName();
         $uri = $this->createUri($server);
 
-        $headers = $request->header??[];
+        $headers = $request->header ?? [];
 
         $cookies = $request->cookie ?? [];
         if ($cookies) {
-            $tmp= [];
+            $tmp = [];
             foreach ($cookies as $name => $value) {
-                $tmp[] = sprintf("%s=%s", $name, $value);
+                $tmp[] = sprintf('%s=%s', $name, $value);
             }
             $headers['cookie'] = implode('; ', $tmp);
         }
@@ -44,7 +44,7 @@ final class ServerRequestFactory implements ServerRequestFactoryInterface
         $psrRequest = $psrRequest
             ->withQueryParams($queryParams)
             ->withCookieParams($cookies)
-            ->withUploadedFiles($this->parseUploadedFiles($request->files??[]));
+            ->withUploadedFiles($this->parseUploadedFiles($request->files ?? []));
 
         return $psrRequest;
     }
@@ -53,7 +53,7 @@ final class ServerRequestFactory implements ServerRequestFactoryInterface
     {
         global $argv;
 
-        return $argv[0]??'';
+        return $argv[0] ?? '';
     }
 
     private function createUri(array $server): UriInterface
@@ -67,7 +67,7 @@ final class ServerRequestFactory implements ServerRequestFactoryInterface
         }
 
         if (isset($server['SERVER_PORT'])) {
-            $uri = $uri->withPort((int)$server['SERVER_PORT']);
+            $uri = $uri->withPort((int) $server['SERVER_PORT']);
         } else {
             $uri = $uri->withPort($uri->getScheme() === 'https' ? 443 : 80);
         }
@@ -76,7 +76,7 @@ final class ServerRequestFactory implements ServerRequestFactoryInterface
             $parts = explode(':', $server['HTTP_HOST']);
             $uri = count($parts) == 2
                 ? $uri->withHost($parts[0])
-                    ->withPort((int)$parts[1])
+                    ->withPort((int) $parts[1])
                 : $uri->withHost($server['HTTP_HOST']);
         } elseif (isset($server['SERVER_NAME'])) {
             $uri = $uri->withHost($server['SERVER_NAME']);

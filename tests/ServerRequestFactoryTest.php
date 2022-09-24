@@ -21,13 +21,13 @@ class ServerRequestFactoryTest extends TestCase
                 'GET',
                 '/',
                 [
-                    'Host' => ['localhost'],
-                    'Connection' => ['keep-alive'],
-                    'Pragma' => ['no-cache'],
-                    'Cache-Control' => ['no-cache'],
-                    'Accept' => ['text/html'],
+                    'Host'            => ['localhost'],
+                    'Connection'      => ['keep-alive'],
+                    'Pragma'          => ['no-cache'],
+                    'Cache-Control'   => ['no-cache'],
+                    'Accept'          => ['text/html'],
                     'Accept-Encoding' => ['gzip, deflate, br'],
-                    'Cookie' => ['phpsessid=fcccs2af8673a2f343a61a96551c8523d79ea; username=razonyang'],
+                    'Cookie'          => ['phpsessid=fcccs2af8673a2f343a61a96551c8523d79ea; username=razonyang'],
                 ],
                 null,
             ],
@@ -43,8 +43,8 @@ class ServerRequestFactoryTest extends TestCase
                 'POST',
                 '/users',
                 [
-                    'Host' => ['localhost'],
-                    'Content-Type' => ['application/json'],
+                    'Host'           => ['localhost'],
+                    'Content-Type'   => ['application/json'],
                     'Content-Length' => ['23'],
                 ],
                 '{"name":"bar","age":18}',
@@ -58,7 +58,7 @@ class ServerRequestFactoryTest extends TestCase
                 null,
                 [
                     'foo.txt' => __FILE__,
-                    'bar.txt' => \dirname(__DIR__) .\DIRECTORY_SEPARATOR . 'README.md',
+                    'bar.txt' => \dirname(__DIR__).\DIRECTORY_SEPARATOR.'README.md',
                 ],
             ],
         ];
@@ -81,7 +81,6 @@ class ServerRequestFactoryTest extends TestCase
                 $cookies[$name] = $value;
             }
         }
-
 
         $builder = (new RequestBuilder($method, $uri))
             ->headers($headers);
@@ -227,7 +226,7 @@ class ServerRequestFactoryTest extends TestCase
             [
                 [
                     'SERVER_PORT' => 9501,
-                    'HTTP_HOST' => 'localhost:9502',
+                    'HTTP_HOST'   => 'localhost:9502',
                 ],
                 9502,
             ],
@@ -352,6 +351,7 @@ class ServerRequestFactoryTest extends TestCase
     public function filesProvider(): array
     {
         $tmpDir = \sys_get_temp_dir();
+
         return [
             [
                 [],
@@ -359,32 +359,32 @@ class ServerRequestFactoryTest extends TestCase
             [
                 [
                     'foo.jpg' => [
-                        'name' => 'foo.jpg',
-                        'type' => 'image/jpeg',
-                        'tmp_name' => $tmpDir. \DIRECTORY_SEPARATOR. 'swoole.upfile.foo.jpg',
-                        'error' => 0,
-                        'size' => 7,
-                        'content' => 'foo.jpg',
+                        'name'     => 'foo.jpg',
+                        'type'     => 'image/jpeg',
+                        'tmp_name' => $tmpDir.\DIRECTORY_SEPARATOR.'swoole.upfile.foo.jpg',
+                        'error'    => 0,
+                        'size'     => 7,
+                        'content'  => 'foo.jpg',
                     ],
                 ],
             ],
             [
                 [
                     'bar.png' => [
-                        'name' => 'bar.png',
-                        'type' => 'image/png',
-                        'tmp_name' => $tmpDir. \DIRECTORY_SEPARATOR. 'swoole.upfile.bar.png',
-                        'error' => 0,
-                        'size' => 7,
-                        'content' => 'bar.png',
+                        'name'     => 'bar.png',
+                        'type'     => 'image/png',
+                        'tmp_name' => $tmpDir.\DIRECTORY_SEPARATOR.'swoole.upfile.bar.png',
+                        'error'    => 0,
+                        'size'     => 7,
+                        'content'  => 'bar.png',
                     ],
                     'fizz.jpg' => [
-                        'name' => 'fizz.jpg',
-                        'type' => 'image/jpeg',
-                        'tmp_name' => $tmpDir. \DIRECTORY_SEPARATOR. 'swoole.upfile.fizz.jpg',
-                        'error' => 0,
-                        'size' => 8,
-                        'content' => 'fizz.jpg',
+                        'name'     => 'fizz.jpg',
+                        'type'     => 'image/jpeg',
+                        'tmp_name' => $tmpDir.\DIRECTORY_SEPARATOR.'swoole.upfile.fizz.jpg',
+                        'error'    => 0,
+                        'size'     => 8,
+                        'content'  => 'fizz.jpg',
                     ],
                 ],
             ],
